@@ -20,10 +20,10 @@ module.exports = {
     } catch(err) { next(err) }
   },
   changePassword: async ( req, res, next ) => {
-    const { newPass } = req.body;
+    const { newPass, oldPass } = req.body;
     try {
       const user = await User.findById( req.loggedUser.id );
-      if( user && hash.comparePassword( password, user.password ) ) res.status(200).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { password: hash.hashPassword( newPass ) }, {new: true} ) })
+      if( user && hash.comparePassword( oldPass, user.password ) ) res.status(200).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { password: hash.hashPassword( newPass ) }, {new: true} ) })
       else next({ status: 400, msg: 'wrong old password'})
     } catch(err) { next(err) }
   },
@@ -57,5 +57,9 @@ module.exports = {
       const user = await User.find();
       res.status(200).json({ user: await user.filter(el => el.role !== 'worker') })
     } catch(err) { next(err) }
+  },
+  updateImage: async ( req, res, next ) => {
+    try { res.status(201).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { profile_image: req.body.image } ) }) }
+    catch(err) { next( err ) }
   }
 }

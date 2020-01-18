@@ -4,6 +4,7 @@ const { model, Schema } = require('mongoose'),
     username: { type: String, required: [true, 'username is required'], unique: true },
     password: { type: String, required: [true, 'password is required'], minlength: [5, 'password min 5 char'] },
     email: { type: String, required: [true, 'email is required'], unique: true },
+    profile_image: String,
     role: String
   }, { versionKey: false, timestamps: true })
 
@@ -19,6 +20,7 @@ UserSchema.path('email').validate(function( val ){
 
 UserSchema.pre('save', function(next) {
   this.password = require('../helpers').hash.hashPassword( this.password );
+  this.profile_image = 'https://storage.cloud.google.com/defaultimage/59162520-blanco-perfil-de-usuario-icono-en-el-boto%CC%81n-negro-aislado-en-blanco.jpg?authuser=0';
   if( this.role ) this.role = this.role;
   else this.role = 'worker';
   next()
