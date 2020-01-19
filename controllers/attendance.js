@@ -3,10 +3,11 @@ const { Attendance: Att, History } = require('../models');
 module.exports = {
   createStartAtt: async ( req, res, next ) => {
     try {
-      const attendance = await Att.find();
-      const date = new Date();
+      const attendance = await Att.find(),
+        date = new Date(),
+        start_image = req.body;
       let pass = attendance.filter(el => el.date === date.toDateString())
-      if( pass.length === 0 ) res.status(201).json({ attendance: await (await Att.create({ UserId: req.loggedUser.id })).populate('UserId') }) 
+      if( pass.length === 0 ) res.status(201).json({ attendance: await (await Att.create({ UserId: req.loggedUser.id, start_image })).populate('UserId') }) 
       else next({ status: 400, msg: 'Absent can only be once a day'})
     }
     catch(err) { next(err) }
@@ -30,6 +31,7 @@ module.exports = {
     } catch(err) { next(err ) }
   },
   uploadingImage: async ( req, res, next ) => {
+    console.log('masuk')
     const url = req.file.cloudStoragePublicUrl;
     if( url ) res.status(201).json({ url });
     else next({ status: 400, msg: 'url not found!' })

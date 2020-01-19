@@ -8,7 +8,7 @@ const Route = require('express').Router(),
 
 Route.get('/', authentication, getAttUser);
 Route.post('/', authentication, createStartAtt);
-Route.post('/upload', multer.single( 'image' ), sendUploadToGCS, uploadingImage);
+Route.post('/upload', authentication, multer.single( 'image' ), sendUploadToGCS, uploadingImage);
 Route.patch('/:id', authentication, updateEndAtt);
 
 
