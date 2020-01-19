@@ -2,8 +2,7 @@ const { Attendance: Att, History } = require('../models');
 
 module.exports = {
   createStartAtt: async ( req, res, next ) => {
-    //next plan image
-    try { 
+    try {
       const attendance = await Att.find();
       const date = new Date();
       let pass = attendance.filter(el => el.date === date.toDateString())
@@ -19,7 +18,6 @@ module.exports = {
     }catch(err){ next(err) }
   },
   updateEndAtt: async ( req, res, next ) => {
-    //next plan image
     try {
       const date = new Date();
       const attendance = await Att.findById( req.params.id );
@@ -30,5 +28,10 @@ module.exports = {
         res.status(200).json({ attendance: updateAtt, history })
       }
     } catch(err) { next(err ) }
+  },
+  uploadingImage: async ( req, res, next ) => {
+    const url = req.file.cloudStoragePublicUrl;
+    if( url ) res.status(201).json({ url });
+    else next({ status: 400, msg: 'url not found!' })
   }
 }
