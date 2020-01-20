@@ -18,8 +18,8 @@ module.exports = {
   },
   getAttUser: async ( req, res, next ) => {
     try{
-      const presence = await Att.find();
-      res.status(200).json({ attendance: presence.filter(el => el.UserId === req.loggedUser.id && el.end === '' ) })
+      const presence = await Att.find().populate('UserId');
+      res.status(200).json({ attendance: await presence.filter(el => String( el.UserId._id ) === String( req.loggedUser.id ) && !el.end )[0] })
     }catch(err){ next(err) }
   },
   updateEndAtt: async ( req, res, next ) => {
