@@ -9,10 +9,11 @@ const { model, Schema } = require('mongoose'),
     date: String,
   }, { versionKey: false })
 
-AttendanceSchema.pre('save', function(next) { 
-  let date = new Date();
-  this.start = date.toLocaleTimeString();
-  this.date = date.toDateString();
+AttendanceSchema.pre('save', function(next) {
+  var IndoTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
+    IndoTime = new Date(IndoTime);
+  this.start = IndoTime.toLocaleTimeString();
+  this.IndoTime = IndoTime.toDateString();
   this.end_image = '';
   this.end = '';
   next();
