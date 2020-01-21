@@ -1,1 +1,1 @@
-module.exports = { hash: require('./hash'), jwt: require('./jwt'), sendEmail: require('./sendMail') }
+module.exports = { hash: require('./hash'), jwt: require('./jwt'), sendEmail: require('./sendMail'), date: require('./GetDate'), image: require('./images') }
