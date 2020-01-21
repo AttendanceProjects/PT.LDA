@@ -35,7 +35,7 @@ module.exports = {
         next({ status: 400, msg: 'You already Check Out'});
       }
       else {
-        await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
+        await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image, end_truth: 'ok' }, { new: true } ).populate('UserId')
         const history = await History.create({ AttendanceId: req.params.id })
         const HisPopulate = await History.findById( history._id ).populate({
           path: 'AttendanceId',
@@ -53,6 +53,14 @@ module.exports = {
     const url = req.file.cloudStoragePublicUrl;
     if( url ) res.status(201).json({ url });
     else next({ status: 400, msg: 'url not found!' })
+  },
+  updateTruthLocation: async ( req, res, next ) => {
+    const { issues, type } = req.body;
+    try {
+      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { start_truth: issues }, { new: true } ).populate('UserId') })
+      else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { end_truth: issues }, { new: true } ).populate('UserId') })
+      else next({ status: 400, msg: 'Out of range' })
+    }catch(err){ next(err) }
   }
 }
 
