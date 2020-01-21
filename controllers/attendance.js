@@ -35,9 +35,17 @@ module.exports = {
         next({ status: 400, msg: 'You already Check Out'});
       }
       else {
-        const updateAtt = await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
+        await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
         const history = await History.create({ AttendanceId: req.params.id })
-        res.status(200).json({ attendance: updateAtt, history })
+        const HisPopulate = await History.findById( history._id ).populate({
+          path: 'AttendanceId',
+          model: 'attendance',
+          populate: {
+            path: 'UserId',
+            model: 'users'
+          }
+        })
+        res.status(200).json({ history: HisPopulate })
       }
     } catch(err) { next(err ) }
   },
