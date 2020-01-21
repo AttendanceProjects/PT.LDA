@@ -57,8 +57,8 @@ module.exports = {
   updateTruthLocation: async ( req, res, next ) => {
     const { issues, type } = req.body;
     try {
-      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { start_truth: issues }, { new: true } ).populate('UserId') })
-      else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { end_truth: issues }, { new: true } ).populate('UserId') })
+      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { start_issues: issues }, { new: true } ).populate('UserId') })
+      else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { end_issues: issues }, { new: true } ).populate('UserId') })
       else next({ status: 400, msg: 'Out of range' })
     }catch(err){ next(err) }
   }
