@@ -1,4 +1,5 @@
-const { Attendance: Att, History } = require('../models');
+const { Attendance: Att, History } = require('../models'),
+  images = require('../helpers/images')
 
 module.exports = {
   createStartAtt: async ( req, res, next ) => {
@@ -13,7 +14,10 @@ module.exports = {
         const newatt = await Att.findById(att._id).populate('UserId');
         res.status(201).json({ attendance: newatt })
       }
-      else next({ status: 400, msg: 'Absent can only be once a day'})
+      else {
+        await images.deleteFileFromGCS( start_image );
+        next({ status: 400, msg: 'Absent can only be once a day'})
+      }
     }
     catch(err) { next(err) }
   },
