@@ -35,7 +35,10 @@ module.exports = {
       var IndoTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
         IndoTime = new Date(IndoTime);
       const attendance = await Att.findById( req.params.id );
-      if( attendance.end ) next({ status: 400, msg: 'You already did it'});
+      if( attendance.end ) {
+        await deleteFileFromGCS( end_image );
+        next({ status: 400, msg: 'You already Check Out'});
+      }
       else {
         const updateAtt = await Att.findByIdAndUpdate( req.params.id, { end: IndoTime.toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
         const history = await History.create({ UserId: req.loggedUser.id, AttendanceId: req.params.id })
@@ -44,7 +47,6 @@ module.exports = {
     } catch(err) { next(err ) }
   },
   uploadingImage: async ( req, res, next ) => {
-    console.log('masuk')
     const url = req.file.cloudStoragePublicUrl;
     if( url ) res.status(201).json({ url });
     else next({ status: 400, msg: 'url not found!' })
