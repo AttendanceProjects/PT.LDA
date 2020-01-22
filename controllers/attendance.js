@@ -54,13 +54,36 @@ module.exports = {
     if( url ) res.status(201).json({ url });
     else next({ status: 400, msg: 'url not found!' })
   },
-  updateTruthLocation: async ( req, res, next ) => {
-    const { issues, type } = req.body;
+  // updateTruthLocation: async ( req, res, next ) => {
+  //   const { issues, type } = req.body;
+  //   try {
+  //     if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { start_issues: issues }, { new: true } ).populate('UserId') })
+  //     else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { end_issues: issues }, { new: true } ).populate('UserId') })
+  //     else next({ status: 400, msg: 'Out of range' })
+  //   }catch(err){ next(err) }
+  // },
+  updateLocation: async ( req, res, next ) => {
+    const { location, accuracy, reason } = req.body,
+      { os, type, id } = req.params;
     try {
-      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { start_issues: issues }, { new: true } ).populate('UserId') })
-      else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { end_issues: issues }, { new: true } ).populate('UserId') })
-      else next({ status: 400, msg: 'Out of range' })
-    }catch(err){ next(err) }
+      let issues;
+      if( os === 'android' ) {
+        if( accuracy > 15 && accuracy < 21 ) issues = 'warning';
+        else if( accuracy > 21 ) issues = 'ok';
+        else issues = 'danger';
+      } else  {
+        if( accuracy > 40 && accuracy < 55 ) issues = 'warning';
+        else if( accuracy > 54 ) issues = 'ok';
+        else issues = 'danger'; // kemungkinan kecil ke kondisi ini *
+      }
+      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { start_location: location, start_issues: issues }, { new: true }).populate('UserId') });
+      else if( type === 'checkout' ) {
+        if( date().toLocaleTimeString().split(':')[0] < 5 && date().toLocaleTimeString().split(' ')[1] === 'PM' ) {
+          if( !reason ) next({ status: 400, msg: 'give us your reason to go home first' })
+          else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_reason: reason, end_issues: issues }, {new: true}).populate('UserId') })
+        } else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues }, { new: true }).populate('UserId') })
+      }else next({ status: 404, msg: 'Invalid Request' })
+    }catch(err){ next(err ) }
   }
 }
 
