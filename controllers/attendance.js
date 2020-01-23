@@ -64,16 +64,17 @@ module.exports = {
   // },
   updateLocation: async ( req, res, next ) => {
     const { location, accuracy, reason } = req.body,
-      { os, type, id } = req.params;
+      { os, type, id } = req.params,
+      numAcc = Number( accuracy )
     try {
       let issues;
       if( os === 'android' ) {
-        if( accuracy > 15 && accuracy < 21 ) issues = 'warning';
-        else if( accuracy > 21 ) issues = 'ok';
+        if( numAcc > 15 && numAcc < 21 ) issues = 'warning';
+        else if( numAcc > 21 ) issues = 'ok';
         else issues = 'danger';
       } else  {
-        if( accuracy > 40 && accuracy < 55 ) issues = 'warning';
-        else if( accuracy > 54 ) issues = 'ok';
+        if( numAcc > 40 && numAcc < 55 ) issues = 'warning';
+        else if( numAcc > 54 ) issues = 'ok';
         else issues = 'danger'; // kemungkinan kecil ke kondisi ini *
       }
       if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { start_location: location, start_issues: issues }, { new: true }).populate('UserId') });
@@ -84,6 +85,16 @@ module.exports = {
         } else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues }, { new: true }).populate('UserId') })
       }else next({ status: 404, msg: 'Invalid Request' })
     }catch(err){ next(err ) }
+  },
+
+  deleteCauseFail: async ( req, res, next ) => {
+    try {
+      const attendance = await Att.findById( req.params.id );
+      if( attendance.start_image ) await deleteFileFromGCS( attendance.start_image );
+      if( attendance.end_image ) await deleteFileFromGCS( attendance.end_image );
+      await Att.findByIdAndDelete( req.params.id );
+      res.status(200).json({ msg: 'success delete attendance' });
+    }catch(err){ next(err) }
   }
 }
 
