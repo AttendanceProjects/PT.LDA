@@ -36,7 +36,7 @@ module.exports = {
       }
       else {
         await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image, end_truth: 'ok' }, { new: true } ).populate('UserId')
-        const history = await History.create({ AttendanceId: req.params.id })
+        const history = await History.create({ AttendanceId: req.params.id, UserId: req.loggedUser.id })
         const HisPopulate = await History.findById( history._id ).populate({
           path: 'AttendanceId',
           model: 'attendance',
@@ -94,6 +94,16 @@ module.exports = {
       if( attendance.end_image ) await deleteFileFromGCS( attendance.end_image );
       await Att.findByIdAndDelete( req.params.id );
       res.status(200).json({ msg: 'success delete attendance' });
+    }catch(err){ next(err) }
+  },
+  getDailyHistory: async (req, res, next) => {
+    try {
+      const history = await History.find({ UserId: req.loggedUser.id });
+      const filterTime = await history.filter(el => el.date === date().toDateString());
+      let status;
+      if( filterTime.length > 0 ) status = 'ok'
+      else status = 'nope'
+      res.status(200).json({ msg: status })
     }catch(err){ next(err) }
   }
 }

@@ -3,7 +3,8 @@ const { model, Schema } = require('mongoose'),
 
   HistorySchema = new Schema({
     AttendanceId: { type: Schema.Types.ObjectId, ref: 'attendance' },
-    createdAt: String
+    createdAt: String,
+    UserId: String
   }, { versionKey: false })
 
 HistorySchema.pre('save', function(next) {
