@@ -99,7 +99,7 @@ module.exports = {
   getDailyHistory: async (req, res, next) => {
     try {
       const history = await History.find({ UserId: req.loggedUser.id });
-      const filterTime = await history.filter(el => el.date === date().toDateString());
+      const filterTime = await history.filter(el => el.createdAt === date().toDateString());
       let status;
       if( filterTime.length > 0 ) status = 'ok'
       else status = 'nope'
