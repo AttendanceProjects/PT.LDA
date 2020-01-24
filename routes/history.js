@@ -1,9 +1,9 @@
-const { Router } = require('express'),
+const Route = require('express').Router(),
   { auth } = require('../middlewares'),
   { authentication } = auth ,
   { HistoryController } = require('../controllers'),
   { GetUserHistory } = HistoryController
 
-Router().get('/', authentication, GetUserHistory);
+Route.get('/', authentication, GetUserHistory);
 
-module.exports = Router();
+module.exports = Route;
