@@ -7,7 +7,7 @@ module.exports = {
     try {
       const attendance = await Att.find();
       const { start_image } = req.body
-      let pass = attendance.filter(el => el.date === date().toDateString())
+      let pass = attendance.filter(el => el.date === date().toDateString() && attendance.UserId === req.loggedUser.id)
       if( pass.length === 0 ) {
         const att = await Att.create({ UserId: req.loggedUser.id, start_image })
         const newatt = await Att.findById(att._id).populate('UserId');
