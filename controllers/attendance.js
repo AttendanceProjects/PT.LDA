@@ -43,8 +43,8 @@ module.exports = {
         next({ status: 400, msg: 'You already Check Out'});
       }
       else {
-        await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
-        res.status(200).json({ msg: 'Checkout successfully!' })
+        const attendance = await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
+        res.status(200).json({ attendance })
       }
     } catch(err) { next(err ) }
   },
