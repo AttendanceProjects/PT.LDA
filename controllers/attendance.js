@@ -8,7 +8,7 @@ module.exports = {
     catch(err) { next(err) }
   },
   getOneUserAttendance: async (req, res, next) => { // get all attendance for /Users
-    try { res.status(200).json({ attendance: await Att.find({ UserId: req.loggedUser.id }).populate('UserId') }) }
+    try { res.status(200).json({ attendance: await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]) }) }
     catch(err) { next(err) }
   },
   createStartAtt: async ( req, res, next ) => { // create attendance
