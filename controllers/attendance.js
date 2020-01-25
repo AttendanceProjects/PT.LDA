@@ -70,7 +70,7 @@ module.exports = {
       let issues;
       if( os === 'android' ) {
         if( numAcc > 15 && numAcc < 21 ) issues = 'warning';
-        else if( numAcc > 21 ) issues = 'ok';
+        else if( numAcc > 20 ) issues = 'ok';
         else issues = 'danger';
       } else  {
         if( numAcc > 40 && numAcc < 55 ) issues = 'warning';
@@ -104,6 +104,26 @@ module.exports = {
       if( filterTime.length > 0 ) status = 'ok'
       else status = 'nope'
       res.status(200).json({ msg: status })
+    }catch(err){ next(err) }
+  },
+  revisiLocation: async (req, res, next) => {
+    const { location, accuracy } = req.body,
+      { type, os, id } = req.params,
+      numAcc = Number( accuracy )
+    try {
+      let issues;
+      if( os === 'android' ) {
+        if( numAcc > 15 && numAcc < 21 ) issues = 'warning';
+        else if( numAcc > 20 ) issues = 'ok';
+        else issues = 'danger';
+      } else {
+        if( numAcc > 40 && numAcc < 55 ) issues = 'warning';
+        else if( numAcc > 54 ) issues = 'ok';
+        else issues = 'danger';
+      }
+      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { start_location: location, start_issues: issues }, { new: true }).populate('UserId') });
+      else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues }, { new: true }).populate('UserId') });
+      else next({ status: 400, msg: 'Invalid Request' })
     }catch(err){ next(err) }
   }
 }
