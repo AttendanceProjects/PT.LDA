@@ -19,7 +19,7 @@ const { model, Schema } = require('mongoose'),
     },
     end_reason: String,
     date: String,
-  }, { versionKey: false })
+  }, { versionKey: false, timestamps: true })
 
 AttendanceSchema.pre('save', function(next) {
   this.start = date().toLocaleTimeString();

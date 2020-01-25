@@ -5,7 +5,13 @@ const { model, Schema } = require('mongoose'),
     password: { type: String, required: [true, 'password is required'], minlength: [5, 'password min 5 char'] },
     email: { type: String, required: [true, 'email is required'], unique: true },
     profile_image: String,
-    role: String
+    // new & belum di handle di controller
+    role: String,
+    join: String,
+    gender: { type: String, required: [true, 'gender is required'] },
+    phone: { type: String, required: [true, 'phone number is required'] },
+    religion: String,
+    identityNumber: Number
   }, { versionKey: false, timestamps: true })
 
 UserSchema.path('username').validate(function( val ){
@@ -19,6 +25,7 @@ UserSchema.path('email').validate(function( val ){
 }, `email allready used!`)
 
 UserSchema.pre('save', function(next) {
+  this.join = new Date();
   this.password = require('../helpers').hash.hashPassword( this.password );
   this.profile_image = 'https://storage.cloud.google.com/defaultimage/59162520-blanco-perfil-de-usuario-icono-en-el-boto%CC%81n-negro-aislado-en-blanco.jpg?authuser=0';
   if( this.role ) this.role = this.role;

@@ -1,4 +1,4 @@
-const { User } = require('../models'),
+const { User, Company } = require('../models'),
   { hash, jwt, sendEmail } = require('../helpers')
 
 module.exports = {
@@ -8,7 +8,12 @@ module.exports = {
   },
   signup: async ( req, res, next ) => {
     const { username, password, email, role } = req.body;
-    try { res.status(201).json({ user: await User.create({ username, password, email, role }) }) }
+    try {
+      const user = await User.create({ username, password, email, role });
+      const company = await Company.find();
+      await Company.findByIdAndUpdate(company[0]._id, {$push: {Employee: user._id}});
+      res.status(201).json({ user: await User.create({ username, password, email, role }) })
+    }
     catch(err) { next(err) }
   },
   signin: async ( req, res, next ) => {

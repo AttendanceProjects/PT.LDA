@@ -1,9 +1,17 @@
-const { Attendance: Att, History } = require('../models'),
+const { Attendance: Att } = require('../models'),
   { image, date } = require('../helpers'),
   { deleteFileFromGCS } = image
 
 module.exports = {
-  createStartAtt: async ( req, res, next ) => {
+  getAllAttendance: async ( req, res, next ) => { // for Admin or HRD get all employee attendance
+    try{ res.status(200).json({ attendance: await Att.find().populate('UserId') }) }
+    catch(err) { next(err) }
+  },
+  getOneUserAttendance: async (req, res, next) => { // get all attendance for /Users
+    try { res.status(200).json({ attendance: await Att.find({ UserId: req.loggedUser.id }).populate('UserId') }) }
+    catch(err) { next(err) }
+  },
+  createStartAtt: async ( req, res, next ) => { // create attendance
     try {
       const attendance = await Att.find();
       const { start_image } = req.body
@@ -20,13 +28,13 @@ module.exports = {
     }
     catch(err) { next(err) }
   },
-  getAttUser: async ( req, res, next ) => {
+  getAttUser: async ( req, res, next ) => { // get UserAtt for checkin dashboard
     try{
       const presence = await Att.find().populate('UserId');
       res.status(200).json({ attendance: await presence.filter(el => String( el.UserId._id ) === String( req.loggedUser.id ) && !el.end && el.date === date().toDateString() )[0] })
     }catch(err){ next(err) }
   },
-  updateEndAtt: async ( req, res, next ) => {
+  updateEndAtt: async ( req, res, next ) => { // delete from dashboard and checkout
     const { end_image } = req.body;
     try {
       const attendance = await Att.findById( req.params.id );
@@ -36,33 +44,16 @@ module.exports = {
       }
       else {
         await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
-        const history = await History.create({ AttendanceId: req.params.id, UserId: req.loggedUser.id })
-        const HisPopulate = await History.findById( history._id ).populate({
-          path: 'AttendanceId',
-          model: 'attendance',
-          populate: {
-            path: 'UserId',
-            model: 'users'
-          }
-        })
-        res.status(200).json({ history: HisPopulate })
+        res.status(200).json({ msg: 'Checkout successfully!' })
       }
     } catch(err) { next(err ) }
   },
-  uploadingImage: async ( req, res, next ) => {
+  uploadingImage: async ( req, res, next ) => { // for uploading image to gcs
     const url = req.file.cloudStoragePublicUrl;
     if( url ) res.status(201).json({ url });
     else next({ status: 400, msg: 'url not found!' })
   },
-  // updateTruthLocation: async ( req, res, next ) => {
-  //   const { issues, type } = req.body;
-  //   try {
-  //     if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { start_issues: issues }, { new: true } ).populate('UserId') })
-  //     else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate( req.params.id, { end_issues: issues }, { new: true } ).populate('UserId') })
-  //     else next({ status: 400, msg: 'Out of range' })
-  //   }catch(err){ next(err) }
-  // },
-  updateLocation: async ( req, res, next ) => {
+  updateLocation: async ( req, res, next ) => { // for update location longitude & latitude
     const { location, accuracy, reason } = req.body,
       { os, type, id } = req.params,
       numAcc = Number( accuracy )
@@ -86,8 +77,7 @@ module.exports = {
       }else next({ status: 404, msg: 'Invalid Request' })
     }catch(err){ next(err ) }
   },
-
-  deleteCauseFail: async ( req, res, next ) => {
+  deleteCauseFail: async ( req, res, next ) => { // delete attendance if failed update location or can use by hrd if want delete this route
     try {
       const attendance = await Att.findById( req.params.id );
       if( attendance.start_image ) await deleteFileFromGCS( attendance.start_image );
@@ -96,17 +86,17 @@ module.exports = {
       res.status(200).json({ msg: 'success delete attendance' });
     }catch(err){ next(err) }
   },
-  getDailyHistory: async (req, res, next) => {
+  getDailyHistory: async (req, res, next) => { // check user allready checkin or new or allready checkout
     try {
-      const history = await History.find({ UserId: req.loggedUser.id });
-      const filterTime = await history.filter(el => el.createdAt === date().toDateString());
+      const attendance = await Att.find({ UserId: req.loggedUser.id });
+      const filterTime = await attendance.filter(el => el.date === date().toDateString());
       let status;
-      if( filterTime.length > 0 ) status = 'ok'
-      else status = 'nope'
-      res.status(200).json({ msg: status })
+      if( filterTime.length > 0 ) status = 'ok';
+      else status = 'nope';
+      res.status(200).json({ msg: status });
     }catch(err){ next(err) }
   },
-  revisiLocation: async (req, res, next) => {
+  revisiLocation: async (req, res, next) => { // for user revisi location * next step
     const { location, accuracy } = req.body,
       { type, os, id } = req.params,
       numAcc = Number( accuracy )
