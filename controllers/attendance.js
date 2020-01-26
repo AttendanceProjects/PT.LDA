@@ -13,13 +13,12 @@ module.exports = {
   },
   createStartAtt: async ( req, res, next ) => { // create attendance
     try {
-      const attendance = await Att.find();
+      const attendance = await Att.find({ UserId: req.loggedUser.id });
       const { start_image } = req.body
-      let pass = attendance.filter(el => el.date === date().toDateString() && attendance.UserId === req.loggedUser.id)
+      let pass = attendance.filter(el => el.date === date().toDateString())
       if( pass.length === 0 ) {
         const att = await Att.create({ UserId: req.loggedUser.id, start_image })
-        const newatt = await Att.findById(att._id).populate('UserId');
-        res.status(201).json({ attendance: newatt })
+        res.status(201).json({ attendance: att })
       }
       else {
         await deleteFileFromGCS( start_image );
