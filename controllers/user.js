@@ -28,7 +28,7 @@ module.exports = {
     const { newPass, oldPass } = req.body;
     try {
       const user = await User.findById( req.loggedUser.id );
-      if( user && hash.comparePassword( oldPass, user.password ) ) res.status(200).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { password: hash.hashPassword( newPass ) }, {new: true} ) })
+      if( user && hash.comparePassword( oldPass, user.password ) ) res.status(200).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { password: hash.hashPassword( newPass ) }, {new: true} ), msg: 'success update your password' })
       else next({ status: 400, msg: 'wrong old password'})
     } catch(err) { next(err) }
   },
