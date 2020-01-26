@@ -7,9 +7,9 @@ module.exports = {
     catch(err) { next(err) }
   },
   signup: async ( req, res, next ) => {
-    const { username, password, email, role } = req.body;
+    const { username, password, email, role, phone, identityNumber, religion, gender } = req.body;
     try {
-      const user = await User.create({ username, password, email, role });
+      const user = await User.create({ username, password, email, role, phone, identityNumber, religion, gender });
       const company = await Company.find();
       await Company.findByIdAndUpdate(company[0]._id, {$push: {Employee: user._id}});
       res.status(201).json({ user: await User.create({ username, password, email, role }) })

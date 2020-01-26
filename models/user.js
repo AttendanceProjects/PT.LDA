@@ -5,7 +5,6 @@ const { model, Schema } = require('mongoose'),
     password: { type: String, required: [true, 'password is required'], minlength: [5, 'password min 5 char'] },
     email: { type: String, required: [true, 'email is required'], unique: true },
     profile_image: String,
-    // new & belum di handle di controller
     role: String,
     join: String,
     gender: { type: String, required: [true, 'gender is required'] },
