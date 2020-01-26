@@ -70,7 +70,7 @@ module.exports = {
       }
       if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { start_location: location, start_issues: issues }, { new: true }).populate('UserId') });
       else if( type === 'checkout' ) {
-        if( date().toLocaleTimeString().split(':')[0] < 5 && date().toLocaleTimeString().split(' ')[1] === 'PM' && date().toLocaleTimeStringz().split(':')[0] < 12 && date().toLocaleTimeString().split(' ')[1] === 'AM' ) {
+        if( date().toLocaleTimeString().split(':')[0] < 5 && date().toLocaleTimeString().split(' ')[1] === 'PM' && date().toLocaleTimeString().split(':')[0] < 12 && date().toLocaleTimeString().split(' ')[1] === 'AM' ) {
           if( !reason ) next({ status: 400, msg: 'give us your reason to go home first' })
           else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_reason: reason, end_issues: issues }, {new: true}).populate('UserId') })
         } else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues, end_reason: reason }, { new: true }).populate('UserId') })
