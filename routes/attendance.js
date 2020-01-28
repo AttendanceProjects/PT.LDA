@@ -8,9 +8,9 @@ const Route = require('express').Router(),
 // Route.get('/admin', authentication, isAdmin, getAllAttendance); // soon
   
 Route.get('/', authentication, getAttUser); // *
-Route.get('/:id', authentication, authorization, findAttById); 
 Route.get('/history', authentication, getOneUserAttendance);
 Route.get('/daily', authentication, getDailyHistory); // *
+Route.get('/:id', authentication, authorization, findAttById); 
 Route.post('/', authentication, createStartAtt); // *
 Route.post('/upload', authentication, multer.single( 'image' ), sendUploadToGCS, uploadingImage); // *
 Route.patch('/location/:os/:type/:id', authentication, updateLocation); // *
