@@ -1,6 +1,6 @@
 const { jwt } = require('../helpers'),
   { decodeToken } = jwt,
-  { User } = require('../models')
+  { User, Attendance } = require('../models')
 
 module.exports = {
   authentication ( req, res, next ) {
@@ -9,6 +9,13 @@ module.exports = {
         req.loggedUser = decodeToken( req.headers.token )
         next()
       } else { next({ status: 403, msg: 'Authentication Error' }) }
+    }catch(err) { next(err) }
+  },
+  authorization (req, res, next) {
+    try{
+      const att = Attendance.findById( req.params.id )
+      if( att.UserId === req.loggedUser.id ) next();
+      else next({ status: 403, msg: 'Authorization Error' })
     }catch(err) { next(err) }
   },
   checkSecretCode ( req, res, next ) {

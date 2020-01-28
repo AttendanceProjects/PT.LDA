@@ -12,7 +12,7 @@ module.exports = {
       const user = await User.create({ username, password, email, role, phone, identityNumber, religion, gender });
       const company = await Company.find();
       await Company.findByIdAndUpdate(company[0]._id, {$push: {Employee: user._id}});
-      res.status(201).json({ user: await User.create({ username, password, email, role }) })
+      res.status(201).json({ user })
     }
     catch(err) { next(err) }
   },

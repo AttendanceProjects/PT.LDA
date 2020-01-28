@@ -114,6 +114,10 @@ module.exports = {
       else if( type === 'checkout' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues }, { new: true }).populate('UserId') });
       else next({ status: 400, msg: 'Invalid Request' })
     }catch(err){ next(err) }
+  },
+  findAttById: async (req, res, next) => { // authorization
+    try { res.status(200).json({ attendance: Att.findById(req.params.id).populate('UserId') }) }
+    catch(err) { next(err) }
   }
 }
 
