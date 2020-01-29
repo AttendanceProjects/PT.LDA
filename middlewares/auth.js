@@ -11,9 +11,9 @@ module.exports = {
       } else { next({ status: 403, msg: 'Authentication Error' }) }
     }catch(err) { next(err) }
   },
-  authorization (req, res, next) {
+  authorization: async (req, res, next) => {
     try{
-      const att = Attendance.findById( req.params.id )
+      const att = await Attendance.findById( req.params.id )
       if( att.UserId === req.loggedUser.id ) next();
       else next({ status: 403, msg: 'Authorization Error' })
     }catch(err) { next(err) }
@@ -26,9 +26,11 @@ module.exports = {
       } else { next({ status: 403, msg: 'need secret Code'})}
     } catch(err) { next(err) }
   },
-  isMaster ( req, res, next ) {
-    const user = User.findById( req.loggedUser.id )
-    if( user.role === 'master' ) next();
-    else next({ status: 400, msg: 'don\'t have access' })
+  isMaster: async ( req, res, next ) => {
+    try{
+      const user = await User.findById( req.loggedUser.id )
+      if( user.role === 'master' ) next();
+      else next({ status: 400, msg: 'don\'t have access' })
+    }catch(err) { next(err ) }
   }
 }
