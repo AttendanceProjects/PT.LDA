@@ -14,7 +14,7 @@ module.exports = {
   authorization: async (req, res, next) => {
     try{
       const att = await Attendance.findById( req.params.id )
-      if( att.UserId === req.loggedUser.id ) next();
+      if( String(att.UserId) === String(req.loggedUser.id) ) next();
       else next({ status: 403, msg: 'Authorization Error' })
     }catch(err) { next(err) }
   },
