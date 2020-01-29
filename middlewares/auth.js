@@ -1,6 +1,7 @@
 const { jwt } = require('../helpers'),
   { decodeToken } = jwt,
-  { User, Attendance } = require('../models')
+  { User, Attendance } = require('../models'),
+  mongoose = require('mongoose');
 
 module.exports = {
   authentication ( req, res, next ) {
@@ -14,7 +15,7 @@ module.exports = {
   authorization: async (req, res, next) => {
     try{
       const att = await Attendance.findById( req.params.id )
-      if( String(att.UserId) === String(req.loggedUser.id) ) next();
+      if( att.UserId == req.loggedUser.id ) next();
       else next({ status: 403, msg: 'Authorization Error' })
     }catch(err) { next(err) }
   },

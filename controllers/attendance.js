@@ -116,7 +116,10 @@ module.exports = {
     }catch(err){ next(err) }
   },
   findAttById: async (req, res, next) => { // authorization
-    try { res.status(200).json({ attendance: Att.findById(req.params.id).populate('UserId') }) }
+    console.log( req.params.id );
+    console.log( req.loggedUser.id );
+    console.log( 'masuk controller' );
+    try { res.status(200).json({ attendance: await Att.findById(req.params.id).populate('UserId') }) }
     catch(err) { next(err) }
   }
 }
