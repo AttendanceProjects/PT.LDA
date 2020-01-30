@@ -6,6 +6,7 @@ const { model, Schema } = require('mongoose'),
     start: String,
     start_image: { type: String, required: [ true, 'image start is required' ] },
     start_issues: String,
+    start_reason: String,
     start_location: {
       latitude: String,
       longitude: String

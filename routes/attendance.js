@@ -2,15 +2,16 @@ const Route = require('express').Router(),
   { auth } = require('../middlewares'),
   { authentication, authorization } = auth,
   { AttendanceController } = require('../controllers'),
-  { createStartAtt, getAttUser, updateEndAtt, getDailyHistory, uploadingImage, updateLocation, deleteCauseFail, revisiLocation, getAllAttendance, getOneUserAttendance, findAttById } = AttendanceController,
+  { createStartAtt, getAttUser, updateEndAtt, getDailyHistory, uploadingImage, updateLocation, deleteCauseFail, revisiLocation, getAllAttendance, getOneUserAttendance, findAttById, searchFilter } = AttendanceController,
   { sendUploadToGCS, multer } = require('../helpers/images')
 
 // Route.get('/admin', authentication, isAdmin, getAllAttendance); // soon
   
 Route.get('/', authentication, getAttUser); // *
-Route.get('/history', authentication, getOneUserAttendance);
+Route.get('/history', authentication, getOneUserAttendance); // *
 Route.get('/daily', authentication, getDailyHistory); // *
-Route.get('/:id', authentication, authorization, findAttById); 
+Route.get('/:id', authentication, authorization, findAttById);
+Route.get('/search/by', searchFilter)
 Route.post('/', authentication, createStartAtt); // *
 Route.post('/upload', authentication, multer.single( 'image' ), sendUploadToGCS, uploadingImage); // *
 Route.patch('/location/:os/:type/:id', authentication, updateLocation); // *

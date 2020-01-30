@@ -14,13 +14,19 @@ module.exports = {
   createStartAtt: async ( req, res, next ) => { // create attendance
     try {
       const attendance = await Att.find({ UserId: req.loggedUser.id });
-      const { start_image } = req.body
+      const { start_image, start_reason } = req.body
       let pass = attendance.filter(el => el.date === date().toDateString())
       if( pass.length === 0 ) {
-        const att = await Att.create({ UserId: req.loggedUser.id, start_image })
-        res.status(201).json({ attendance: att })
-      }
-      else {
+        if( date().toLocaleTimeString().split(':')[0] < 8 && date().toLocaleTimeString().split(' ')[1] === 'AM' ) {
+          const att = await Att.create({ UserId: req.loggedUser.id, start_image })
+          res.status(201).json({ attendance: att })
+        }else {
+          if( !start_reason ) {
+            await deleteFileFromGCS( start_image );
+            next({ status: 400, msg: 'You\'re late, please input your reason' });
+          }else res.status(201).json({ attendance: await Att.create({ UserId: req.loggedUser.id, start_image, start_reason }) })
+        }
+      }else {
         await deleteFileFromGCS( start_image );
         next({ status: 400, msg: 'Absent can only be once a day'})
       }
@@ -67,12 +73,26 @@ module.exports = {
         else if( numAcc > 54 ) issues = 'ok';
         else issues = 'danger'; // kemungkinan kecil ke kondisi ini *
       }
-      if( type === 'checkin' ) res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { start_location: location, start_issues: issues }, { new: true }).populate('UserId') });
-      else if( type === 'checkout' ) {
-        if( date().toLocaleTimeString().split(':')[0] < 5 && date().toLocaleTimeString().split(' ')[1] === 'PM' && date().toLocaleTimeString().split(':')[0] < 12 && date().toLocaleTimeString().split(' ')[1] === 'AM' ) {
-          if( !reason ) next({ status: 400, msg: 'give us your reason to go home first' })
-          else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_reason: reason, end_issues: issues }, {new: true}).populate('UserId') })
-        } else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues, end_reason: reason }, { new: true }).populate('UserId') })
+      if( type === 'checkin' ) {
+        if( location.latitude && location.longitude && accuracy ) {
+          res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { start_location: location, start_issues: issues }, { new: true }).populate('UserId') })
+        }else {
+          const att = Att.findById(id)
+          if( att.start_image ) await deleteFileFromGCS( att.start_image );
+          await Att.findByIdAndDelete( id );
+          res.status(200).json({ msg: 'failed' })
+        }
+      }else if( type === 'checkout' ) {
+        if( location.latitude && location.longitude && accuracy ) {
+          if( date().toLocaleTimeString().split(':')[0] < 5 && date().toLocaleTimeString().split(' ')[1] === 'PM' && date().toLocaleTimeString().split(':')[0] < 12 && date().toLocaleTimeString().split(' ')[1] === 'AM' ) {
+            if( !reason ) next({ status: 400, msg: 'give us your reason to go home first' })
+            else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_reason: reason, end_issues: issues }, {new: true}).populate('UserId') })
+          } else res.status(200).json({ attendance: await Att.findByIdAndUpdate(id, { end_location: location, end_issues: issues, end_reason: reason }, { new: true }).populate('UserId') })
+        }else {
+          const att = Att.findById( id )
+          if( att.end_image ) await deleteFileFromGCS( att.end_image );
+          res.status(200).json({ msg: 'failed' })
+        }
       }else next({ status: 404, msg: 'Invalid Request' })
     }catch(err){ next(err ) }
   },
@@ -116,11 +136,32 @@ module.exports = {
     }catch(err){ next(err) }
   },
   findAttById: async (req, res, next) => { // authorization
-    console.log( req.params.id );
-    console.log( req.loggedUser.id );
-    console.log( 'masuk controller' );
     try { res.status(200).json({ attendance: await Att.findById(req.params.id).populate('UserId') }) }
     catch(err) { next(err) }
+  },
+  searchFilter: async (req, res, next) => {
+    const { category } = req.query;
+    if( category === 'late' ) {
+      try{
+        const att = await Att.find({ UserId: req.loggedUser.id })
+        res.status(200).json({ attendance: await att.filter(el => el.start_reason) });
+      }catch(err) { next(err) }
+    }else if( category === 'checkin' ) {
+      try {
+        const att = await Att.find({ UserId: req.loggedUser.id });
+        res.status(200).json({ attendance: await att.filter(el => !el.start) })
+      }catch(err) { next(err) }
+    }else if( category === 'checkout' ) {
+      try{
+        const att = await Att.find({ UserId: req.loggedUser.id })
+        res.tatus(200).json({ attendance: await att.filter(el => !el.end) });
+      }catch(err){ next(err) }
+    }else if( category === 'absent' ) {
+      try {
+        const att = await Att.find({ UserId: req.loggedUser.id });
+        res.status(200).json({ attendance: await att.filter(el => el.start_image === 'absent' )})
+      }catch(err){ next( err ) }
+    }else next({ status: 400, msg: 'Invalid search filter' });
   }
 }
 

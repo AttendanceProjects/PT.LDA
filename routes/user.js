@@ -11,6 +11,5 @@ Route.post('/signin', signin);
 Route.post('/forgot', forgotPassword);
 Route.post('/forgot/confirm', checkSecretCode, confirmSecretCode);
 Route.post('/change', authentication, changePassword);
-
 Route.post('/upload', authentication, updateImage);
 module.exports = Route;

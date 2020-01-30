@@ -1,7 +1,8 @@
 require('dotenv').config();
 
 const app = require('express')(),
-  PORT = process.env.PORT || 3001
+  PORT = process.env.PORT || 3001,
+  { cron } = require('./helpers')
 
 app.use(require('cors')());
 app.use(require('morgan')('dev'));
@@ -22,6 +23,6 @@ app.use('/', require('./routes'));
 
 app.use(require('./middlewares').errorHandler);
 
-app.listen(PORT, _ => console.log(`Listening on PORT ${ PORT }`));
+app.listen(PORT, cron, _ => console.log(`Listening on PORT ${ PORT }`));
 
 module.exports = app;

@@ -1,5 +1,5 @@
 const { User, Company } = require('../models'),
-  { hash, jwt, sendEmail } = require('../helpers')
+  { hash, jwt, sendEmail, date } = require('../helpers')
 
 module.exports = {
   checkSignin: async ( req, res, next ) => {
