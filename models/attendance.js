@@ -1,5 +1,5 @@
 const { model, Schema } = require('mongoose'),
-  { date: serverTime } = require('../helpers'),
+  { date } = require('../helpers'),
 
   AttendanceSchema = new Schema({
     UserId: { type: Schema.Types.ObjectId, ref: 'users' },
@@ -23,15 +23,14 @@ const { model, Schema } = require('mongoose'),
   }, { versionKey: false, timestamps: true })
 
 AttendanceSchema.pre('save', async function(next) {
-  console.log( serverTime(), 'get Time' );
-  const getDate = await serverTime();
-  this.start = getDate.toLocaleTimeString();
+  let IndoTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
+  this.start = new Date( IndoTime ).toLocaleTimeString();
   this.start_issues = '';
   this.start_location = {
     latitude: '',
     longitude: ''
   };
-  this.date = getDate.toDateString();
+  this.date = new Date( IndoTime ).toDateString();
   this.end = '';
   this.end_image = '';
   this.end_issues = '';
