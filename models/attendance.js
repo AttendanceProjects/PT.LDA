@@ -22,14 +22,16 @@ const { model, Schema } = require('mongoose'),
     date: String,
   }, { versionKey: false, timestamps: true })
 
-AttendanceSchema.pre('save', function(next) {
-  this.start = date().toLocaleTimeString();
+AttendanceSchema.pre('save', async function(next) {
+  console.log( date(), 'get Time' );
+  const getDate = await date();
+  this.start = getDate.toLocaleTimeString();
   this.start_issues = '';
   this.start_location = {
     latitude: '',
     longitude: ''
   };
-  this.date = date().toDateString();
+  this.date = getDate.toDateString();
   this.end = '';
   this.end_image = '';
   this.end_issues = '';
