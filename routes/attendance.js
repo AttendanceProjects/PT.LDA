@@ -11,7 +11,7 @@ Route.get('/', authentication, getAttUser); // *
 Route.get('/history', authentication, getOneUserAttendance); // *
 Route.get('/daily', authentication, getDailyHistory); // *
 Route.get('/:id', authentication, authorization, findAttById);
-Route.get('/search/by', searchFilter)
+Route.get('/search/by', authentication, searchFilter)
 Route.post('/', authentication, createStartAtt); // *
 Route.post('/upload', authentication, multer.single( 'image' ), sendUploadToGCS, uploadingImage); // *
 Route.patch('/location/:os/:type/:id', authentication, updateLocation); // *

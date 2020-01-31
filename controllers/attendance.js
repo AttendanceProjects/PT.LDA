@@ -15,21 +15,17 @@ module.exports = {
     try {
       const attendance = await Att.find({ UserId: req.loggedUser.id });
       const { start_image, start_reason } = req.body
-      console.log( start_image, start_reason, '------------------------------- body' )
       let pass = attendance.filter(el => el.date === date().toDateString())
       if( pass.length === 0 ) {
         if( date().toLocaleTimeString().split(':')[0] < 8 && date().toLocaleTimeString().split(' ')[1] === 'AM' ) {
           const att = await Att.create({ UserId: req.loggedUser.id, start_image })
-          console.log( att, 'dapat attnya ===================' );
           res.status(201).json({ attendance: att })
         }else {
-          console.log( 'masuk else', start_reason );
           if( !start_reason ) {
             await deleteFileFromGCS( start_image );
             next({ status: 400, msg: 'You\'re late, please input your reason' });
           }else {
             const getAtt = await Att.create({ UserId: req.loggedUser.id, start_image, start_reason });
-            console.log( getAtt );
             res.status(201).json({ attendance: getAtt })
           }
         }
