@@ -28,7 +28,7 @@ module.exports = {
             await deleteFileFromGCS( start_image );
             next({ status: 400, msg: 'You\'re late, please input your reason' });
           }else {
-            const getAtt = await create({ UserId: req.loggedUser.id, start_image, start_reason });
+            const getAtt = await Att.create({ UserId: req.loggedUser.id, start_image, start_reason });
             console.log( getAtt );
             res.status(201).json({ attendance: getAtt })
           }
