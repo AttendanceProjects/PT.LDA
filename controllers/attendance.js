@@ -147,7 +147,7 @@ module.exports = {
     if( category === 'late' ) {
       try{
         const att = await Att.find({ UserId: req.loggedUser.id })
-        res.status(200).json({ attendance: await att.filter(el => el.start_reason) });
+        res.status(200).json({ attendance: await att.filter(el => el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'AM' || el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'PM') });
       }catch(err) { next(err) }
     }else if( category === 'checkin' ) {
       try {
