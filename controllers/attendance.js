@@ -155,7 +155,7 @@ module.exports = {
       const { search: filterDate } = req.query;
       try {
         console.log( filterDate );
-        const att = await Att.find({ date: filterDate }).populate('UserId');
+        const att = await Att.find({ UserId: req.loggedUser.id, date: filterDate }).populate('UserId');
         res.status(200).json({ attendance: att })
       }catch(err) { next(err) }
     }else if( category === 'checkout' ) {
