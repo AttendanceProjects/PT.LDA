@@ -150,7 +150,7 @@ module.exports = {
         res.status(200).json({ attendance: await att.filter(el => el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'AM' || el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'PM') });
       }catch(err) { next(err) }
     }else if( category === 'date' ) {
-      const { date: filterDate } = req.body;
+      const { search: filterDate } = req.query;
       try {
         const att = await Att.find({ date: filterDate }).populate('UserId');
         res.status(200).json({ attendance: att })
