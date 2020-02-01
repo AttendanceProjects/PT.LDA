@@ -149,15 +149,16 @@ module.exports = {
         const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId')
         res.status(200).json({ attendance: await att.filter(el => el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'AM' || el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'PM') });
       }catch(err) { next(err) }
-    }else if( category === 'checkin' ) {
+    }else if( category === 'date' ) {
+      const { date: filterDate } = req.body;
       try {
-        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId')
-        res.status(200).json({ attendance: await att.filter(el => !el.start) })
+        const att = await Att.find({ date: filterDate }).populate('UserId');
+        res.status(200).json({ attendance: att })
       }catch(err) { next(err) }
     }else if( category === 'checkout' ) {
       try{
         const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId')
-        res.tatus(200).json({ attendance: await att.filter(el => !el.end) });
+        res.status(200).json({ attendance: await att.filter(el => !el.end) });
       }catch(err){ next(err) }
     }else if( category === 'absent' ) {
       try {

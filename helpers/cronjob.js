@@ -4,22 +4,25 @@ const { User, Attendance } = require('../models'),
 
 
 cron.schedule("0 0 23 */1 * *", async () => {
-  console.log( 'cronjob is done' );
+  console.log( 'CronJob is Running' );
   try {
+    const date = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
     const allUsers = await User.find();
-    const allAttendance = await Attendance.find({ date: date().toDateString() });
+    const allAttendance = await Attendance.find({ date: new Date( date ).toDateString() });
     allAttendance.forEach((att, i) => {
       allUsers.forEach(async (user, j) => {
-        if( att.UserId == user._id ) {
+        if( String(att.UserId) == String(user._id) ) {
           console.log( `${user.username} allready checkin` );
         }else {
-          const att = await Attendance.create({ UserId: user._id, start_image: 'absent' })
-          console.log( `att absent has created with attendance id => ${ att._id }` )
+          const { _id: id } = await Attendance.create({ UserId: user._id, start_image: 'absent' })
+          console.log( `att absent has created with attendance id => ${ id }` )
         }
       })
     })
-    const getDate = await date().toDateString();
+    // const getDate = await date().toDateString();
   }catch(err) { console.log( err ) }
 })
 
 module.exports = cron;
+
+// 94c1d
