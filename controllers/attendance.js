@@ -147,7 +147,7 @@ module.exports = {
     const { category } = req.query;
     if( category === 'late' ) {
       try{
-        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId')
+        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]);
         res.status(200).json({ attendance: await att.filter(el => el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'AM' || el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'PM') });
       }catch(err) { next(err) }
     }else if( category === 'date' ) {
@@ -155,17 +155,18 @@ module.exports = {
       const { search: filterDate } = req.query;
       try {
         console.log( filterDate );
-        const att = await Att.find({ UserId: req.loggedUser.id, date: filterDate }).populate('UserId');
+        const att = await Att.find({ UserId: req.loggedUser.id, date: filterDate }).populate('UserId').sort([[ 'createdAt', 'descending' ]]);
         res.status(200).json({ attendance: att })
       }catch(err) { next(err) }
     }else if( category === 'checkout' ) {
       try{
-        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId')
+        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]);
+        console.log( att );
         res.status(200).json({ attendance: await att.filter(el => !el.end) });
       }catch(err){ next(err) }
     }else if( category === 'absent' ) {
       try {
-        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId')
+        const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]);
         res.status(200).json({ attendance: await att.filter(el => el.start_image === 'absent' )})
       }catch(err){ next( err ) }
     }else next({ status: 400, msg: 'Invalid search filter' });
