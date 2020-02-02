@@ -54,7 +54,7 @@ module.exports = {
       const user = await User.findById( req.secretUser.id )
       if( user && req.secretUser.email === user.email ) {
         res.status(200).json({ user: await User.findByIdAndUpdate( req.secretUser.id, {password: hash.hashPassword( newPass )}, {new: true} ) })
-      }else { console.log('masuk sini jg?')}
+      }else next({ status: 400, msg: 'Sorry, wrong secret code' });
     }catch(err) { next(err) }
   },
   approval: async ( req, res, next ) => {
