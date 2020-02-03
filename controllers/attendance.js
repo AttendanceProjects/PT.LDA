@@ -39,7 +39,7 @@ module.exports = {
   getAttUser: async ( req, res, next ) => { // get UserAtt for checkin dashboard
     try{
       const presence = await Att.find().populate('UserId');
-      res.status(200).json({ attendance: await presence.filter(el => String( el.UserId._id ) === String( req.loggedUser.id ) && !el.end && el.date === date().toDateString() )[0] })
+      res.status(200).json({ attendance: await presence.filter(el => String( el.UserId._id ) === String( req.loggedUser.id ) && el.date === date().toDateString() )[0] })
     }catch(err){ next(err) }
   },
   updateEndAtt: async ( req, res, next ) => { // delete from dashboard and checkout

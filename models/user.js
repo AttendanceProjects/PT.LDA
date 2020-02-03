@@ -24,7 +24,8 @@ UserSchema.path('email').validate(function( val ){
 }, `email allready used!`)
 
 UserSchema.pre('save', function(next) {
-  this.join = new Date();
+  let IndoTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
+  this.join = new Date( IndoTime );
   this.password = require('../helpers').hash.hashPassword( this.password );
   this.profile_image = 'https://storage.cloud.google.com/defaultimage/59162520-blanco-perfil-de-usuario-icono-en-el-boto%CC%81n-negro-aislado-en-blanco.jpg?authuser=0';
   if( this.role ) this.role = this.role;
