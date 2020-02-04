@@ -23,7 +23,9 @@ module.exports = {
   findFilter: async (req, res, next) => {
     const { key } = req.query;
     if( key === 'req' || key === 'acc' || key === 'dec' ) {
-      res.status(200).json({ correction: await Correct.find({ status: key }).populate('AttId').sort([[ 'createdAt', 'descending' ]]) });
+      try {
+        res.status(200).json({ correction: await Correct.find({ status: key }).populate('AttId').sort([[ 'createdAt', 'descending' ]]) });
+      } catch(err) { next( err ) }
     }else next({ status: 400, msg: 'Invalid search keyword' })
   },
   responseCorrection: async (req, res, next) => {
@@ -31,5 +33,9 @@ module.exports = {
     if( res === 'acc' || res === 'dec' ) {
       res.status(200).json({ correction: await Correct.findByIdAndUpdate(id, { status: response }, { new: true }).populate('AttId'), msg: res })
     }else next({ status: 400, msg: 'Invalid search keyword' })
+  },
+  seeAllRequestIn: async (req, res, next) => {
+    try { res.status(200).json({ correction: await Correct.find({ status: status === 'req' }) }) }
+    catch(err) { next( err ) }
   }
 }

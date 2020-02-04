@@ -4,13 +4,15 @@ const { CorrectionController } = require('../controllers'),
     createCorrection,
     getUserCorrection,
     findFilter,
-    responseCorrection
+    responseCorrection,
+    seeAllRequestIn
   } = CorrectionController,
   { authentication, acceptCorrection } = auth,
   Route = require('express').Router();
 
 Route.get('/', authentication, getUserCorrection);
 Route.get('/search', authentication, findFilter);
+Route.get('/inreq', authentication, acceptCorrection, seeAllRequestIn);
 Route.post('/', authentication, createCorrection);
 Route.patch('/:id/:res', authentication, acceptCorrection, responseCorrection);
 
