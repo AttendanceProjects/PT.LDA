@@ -5,7 +5,7 @@ const Route = require('express').Router(),
   { authentication, checkSecretCode, isMaster } = auth
 
 Route.get('/', authentication, checkSignin);
-Route.get('/approval', approval);
+Route.get('/approval', authentication, approval);
 Route.post('/signup', authentication, isMaster, signup);
 Route.post('/signin', signin);
 Route.post('/forgot', forgotPassword);

@@ -33,5 +33,12 @@ module.exports = {
       if( user.role === 'master' ) next();
       else next({ status: 400, msg: 'don\'t have access' })
     }catch(err) { next(err ) }
+  },
+  acceptCorrection: async ( req, res, next ) => {
+    try {
+      const user = await User.findById( req.loggedUser.id )
+      if( user.role === 'master' || user.role === 'spv' ) next();
+      else next({ status: 400, msg: 'don\'t have access' })
+    }catch(err) { next( err ) }
   }
 }

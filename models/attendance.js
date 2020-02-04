@@ -20,6 +20,8 @@ const { model, Schema } = require('mongoose'),
     },
     end_reason: String,
     date: String,
+
+    status: String
   }, { versionKey: false, timestamps: true })
 
 AttendanceSchema.pre('save', async function(next) {
@@ -34,6 +36,7 @@ AttendanceSchema.pre('save', async function(next) {
   this.end = '';
   this.end_image = '';
   this.end_issues = '';
+  this.status = '';
   this.end_location = {
     latitude: '',
     longitude: ''
