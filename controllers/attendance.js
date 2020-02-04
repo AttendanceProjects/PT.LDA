@@ -147,7 +147,7 @@ module.exports = {
     if( category === 'late' ) {
       try{
         const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]);
-        res.status(200).json({ attendance: await att.filter(el => el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'AM' || el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'PM') });
+        res.status(200).json({ attendance: await att.filter(el => el.start.split(':')[0] > 7 && el.start.split(' ')[1] === 'AM' || el.start.split(':')[0] < 12 && el.start.split(' ')[1] === 'PM') });
       }catch(err) { next(err) }
     }else if( category === 'date' ) {
       const { search: filterDate } = req.query;
@@ -158,7 +158,7 @@ module.exports = {
     }else if( category === 'checkout' ) {
       try{
         const att = await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]);
-        res.status(200).json({ attendance: await att.filter(el => !el.end) });
+        res.status(200).json({ attendance: await att.filter(el => !el.end && el.date !== date().toDateString()) });
       }catch(err){ next(err) }
     }else if( category === 'absent' ) {
       try {
