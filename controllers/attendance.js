@@ -169,8 +169,8 @@ module.exports = {
   },
   checkAvaiable: async (req, res, next) => {
     try {
-      const data = await Correct.findOne({ AttId: req.params.id });
-      if( data ) next({ status: 400, msg: 'Att allready have request' })
+      const data = await Correct.find({ AttId: req.params.id });
+      if( data.length > 2 ) next({ status: 400, msg: 'You allready 2 Request Correction for this Attendance' })
       else res.status(200).json({ msg: 'ok' });
     }catch(err){ next( err ) }
   }
