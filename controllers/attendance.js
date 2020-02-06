@@ -1,4 +1,4 @@
-const { Attendance: Att } = require('../models'),
+const { Attendance: Att, Correct } = require('../models'),
   { image, date } = require('../helpers'),
   { deleteFileFromGCS } = image
 
@@ -166,6 +166,13 @@ module.exports = {
         res.status(200).json({ attendance: await att.filter(el => el.start_image === 'absent' )})
       }catch(err){ next( err ) }
     }else next({ status: 400, msg: 'Invalid search filter' });
+  },
+  checkAvaiable: async (req, res, next) => {
+    try {
+      const data = await Correct.findOne({ AttId: req.params.id });
+      if( data ) next({ status: 400, msg: 'Att allready have request' })
+      else res.status(200).json({ msg: 'ok' });
+    }catch(err){ next( err ) }
   }
 }
 
