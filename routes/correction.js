@@ -13,7 +13,7 @@ const { CorrectionController } = require('../controllers'),
 Route.get('/', authentication, getUserCorrection);
 Route.get('/search', authentication, findFilter);
 Route.get('/inreq', authentication, acceptCorrection, seeAllRequestIn);
-Route.post('/:id', authentication, createCorrection);
+Route.post('/', authentication, createCorrection);
 Route.patch('/:id/:res', authentication, acceptCorrection, responseCorrection);
 
 

@@ -3,7 +3,7 @@ const { Correct, Attendance: Att } = require('../models')
 
 module.exports = {
   createCorrection: async (req, res, next) => {
-    let { reason, image, start_time, end_time } = req.body;
+    let { reason, image, start_time, end_time, id} = req.body;
     start_time = new Date( start_time ).toLocaleTimeString();
     end_time = new Date( end_time ).toLocaleTimeString();
     setTimeout(() => console.log(`
@@ -12,10 +12,11 @@ reason => ${ reason }
 image => ${ image }
 start time => ${ start_time }
 end time => ${ end_time }
+id => ${ id }
 ****************************
     `, 3000))
     try {
-      const correct = await Correct.findOne({ AttId: req.params.id })
+      const correct = await Correct.findOne({ AttId: id })
       if( correct ) next({ status: 400, msg: 'This attendance on request correction' })
       else {
         const correct = await Correct.create({ UserId: req.loggedUser.id, AttId: req.params.id, reason, image, start_time, end_time })
