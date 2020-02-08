@@ -6,6 +6,14 @@ module.exports = {
     let { reason, image, startAfter: start_time, endAfter: end_time } = req.body;
     start_time = new Date( start_time ).toLocaleTimeString();
     end_time = new Date( end_time ).toLocaleTimeString();
+    setTimeout(() => console.log(`
+PAYLOADS ===================
+reason => ${ reason }
+image => ${ image }
+start time => ${ start_time }
+end time => ${ end_time }
+****************************
+    `, 3000))
     try {
       const correct = await Correct.findOne({ AttId: req.params.id })
       if( correct ) next({ status: 400, msg: 'This attendance on request correction' })
