@@ -3,7 +3,7 @@ const { Correct, Attendance: Att } = require('../models')
 
 module.exports = {
   createCorrection: async (req, res, next) => {
-    let { reason, image, startAfter: start_time, endAfter: end_time } = req.body;
+    let { reason, image, start_time, end_time } = req.body;
     start_time = new Date( start_time ).toLocaleTimeString();
     end_time = new Date( end_time ).toLocaleTimeString();
     setTimeout(() => console.log(`
