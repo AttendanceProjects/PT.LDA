@@ -5,10 +5,8 @@ const { model, Schema } = require('mongoose'),
     UserId: { type: Schema.Types.ObjectId, ref: 'users' },
     reason: { type: String, required: [true, 'reason is required'] },
     image: String,
-    start: String,
     start_time: String,
     end_time: String,
-    end: String,
     status: String
   }, { timestamps: true, versionKey: false })
 

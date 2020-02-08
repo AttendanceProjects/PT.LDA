@@ -19,7 +19,7 @@ id => ${ id }
       const correct = await Correct.findOne({ AttId: id })
       if( correct ) next({ status: 400, msg: 'This attendance on request correction' })
       else {
-        const correct = await Correct.create({ UserId: req.loggedUser.id, AttId: req.params.id, reason, image, start_time, end_time })
+        const correct = await Correct.create({ UserId: req.loggedUser.id, AttId: id, reason, image, start_time, end_time })
         if( correct ) res.status(201).json({ msg: 'Your request has been sent' })
         else next({ status: 400, msg: 'something error, please try again' })
       }
@@ -28,6 +28,7 @@ id => ${ id }
   getUserCorrection: async (req, res, next) => {
     try {
       const correction = await Correct.find({ UserId: req.loggedUser.id }).populate('AttId').sort([[ 'createdAt', 'descending' ]]);
+      console.log( correction[0] )
       res.status(200).json({ correction })
     }catch(err) { next( err ) }
   },
