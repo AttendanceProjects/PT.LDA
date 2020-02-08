@@ -6,6 +6,8 @@ const { model, Schema } = require('mongoose'),
     reason: { type: String, required: [true, 'reason is required'] },
     image: String,
     start: String,
+    start_time: String,
+    end_time: String,
     end: String,
     status: String
   }, { timestamps: true, versionKey: false })
