@@ -20,6 +20,7 @@ id => ${ id }
       if( correct ) next({ status: 400, msg: 'This attendance on request correction' })
       else {
         const correct = await Correct.create({ UserId: req.loggedUser.id, AttId: id, reason, image, start_time, end_time })
+        console.log( correct, 'is correct' );
         if( correct ) res.status(201).json({ msg: 'Your request has been sent' })
         else next({ status: 400, msg: 'something error, please try again' })
       }
