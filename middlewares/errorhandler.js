@@ -12,6 +12,8 @@ module.exports = (err, req, res, next) => {
       msg: 'Validation Error',
       errors
     })
+  } else if( err.name === 'MulterError' ) {
+    res.status(400).json({ msg: err.message });
   } else if(err.name == 'JsonWebTokenError') {
     res.status(403).json({ msg: 'Invalid Token' })
   } else if(err.kind == 'ObjectId') {
