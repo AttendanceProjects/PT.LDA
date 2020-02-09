@@ -26,13 +26,13 @@ const { model, Schema } = require('mongoose'),
 
 AttendanceSchema.pre('save', async function(next) {
   let IndoTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
-  this.start = new Date( IndoTime ).toLocaleTimeString();
+  this.start = this.start || new Date( IndoTime ).toLocaleTimeString();
   this.start_issues = '';
   this.start_location = {
     latitude: '',
     longitude: ''
   };
-  this.date = new Date( IndoTime ).toDateString();
+  this.date = this.date || new Date( IndoTime ).toDateString();
   this.end = '';
   this.end_image = '';
   this.end_issues = '';

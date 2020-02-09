@@ -11,6 +11,12 @@ module.exports = {
     try { res.status(200).json({ attendance: await Att.find({ UserId: req.loggedUser.id }).populate('UserId').sort([[ 'createdAt', 'descending' ]]) }) }
     catch(err) { next(err) }
   },
+  createAttOffline: async (req, res, next) => {
+    try{
+      const { start_image, start_reason, clock } = req.body;
+      res.status(201).json({ attendance: await Att.create({ UserId: req.loggedUser.id, start_reason, start_image, time: new Date( clock ).toLocaleTimeString(), date: new Date( clock ).toDateString() }) })
+    }catch(err) { next( err ) }
+  },
   createStartAtt: async ( req, res, next ) => { // create attendance
     try {
       const attendance = await Att.find({ UserId: req.loggedUser.id });
