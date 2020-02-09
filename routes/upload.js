@@ -3,7 +3,7 @@ const Route = require('express').Router(),
 
 Route
   .post(
-    '/upload',
+    '/',
     multer.single( 'image' ),
     sendUploadToGCS,
     async ( req, res, next ) => { // for uploading image to gcs
