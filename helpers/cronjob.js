@@ -2,9 +2,9 @@ const { User, Attendance } = require('../models'),
   cron = require('node-cron');
 
 
-cron.schedule("0 23 */1 * * *", async () => {
+cron.schedule("0 0 23 */1 * *", async () => {
   // cron.schedule('1 * * * * *', async () => {
-  console.log( '--------------CronJob is Running---------------' );
+  console.log( 'CronJob is Running' );
   try {
     const date = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
     const allUsers = await User.find();
@@ -14,8 +14,8 @@ cron.schedule("0 23 */1 * * *", async () => {
         if( String(att.UserId) == String(user._id) ) {
           console.log( `${user.username} allready checkin` );
         }else {
-          // const { _id: id } = await Attendance.create({ UserId: user._id, start_image: 'absent' })
-          console.log( `att absent has created with attendance id => ${ 'aa' }` )
+          const { _id: id } = await Attendance.create({ UserId: user._id, start_image: 'absent' })
+          console.log( `att absent has created with attendance id => ${ id }` )
         }
       })
     })
