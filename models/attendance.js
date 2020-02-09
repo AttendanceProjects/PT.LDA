@@ -1,5 +1,4 @@
 const { model, Schema } = require('mongoose'),
-  { date } = require('../helpers'),
 
   AttendanceSchema = new Schema({
     UserId: { type: Schema.Types.ObjectId, ref: 'users' },

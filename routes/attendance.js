@@ -1,26 +1,36 @@
 const Route = require('express').Router(),
-  { auth } = require('../middlewares'),
-  { authentication, authorization } = auth,
-  { AttendanceController } = require('../controllers'),
-  { createStartAtt, getAttUser, updateEndAtt, getDailyHistory, createAttOffline, uploadingImage, updateLocation, deleteCauseFail, revisiLocation, getAllAttendance, checkAvaiable, getOneUserAttendance, findAttById, searchFilter } = AttendanceController,
-  { sendUploadToGCS, multer } = require('../helpers/images')
+  { auth: { authorization } } = require('../middlewares'),
+  { AttendanceController: {
+      createStartAtt,
+      getAttUser,
+      updateEndAtt,
+      getDailyHistory,
+      createAttOffline,
+      updateLocation,
+      revisiLocation,
+      getAllAttendance,
+      checkAvaiable,
+      getOneUserAttendance,
+      findAttById,
+      searchFilter,
+      deleteCauseFail
+    } } = require('../controllers')
 
-// Route.get('/admin', authentication, isAdmin, getAllAttendance); // soon
+// Route.get('/admin', isAdmin, getAllAttendance); // soon
   
-Route.get('/', authentication, getAttUser); // *
-Route.get('/history', authentication, getOneUserAttendance); // *
-Route.get('/daily', authentication, getDailyHistory); // *
-Route.get('/:id', authentication, authorization, findAttById); //*
-Route.get('/search/by', authentication, searchFilter); //*
-Route.get('/check/:id', authentication, checkAvaiable);
-Route.post('/', authentication, createStartAtt); // *
-Route.post('/offline', authentication, createAttOffline); 
-Route.post('/upload', authentication, multer.single( 'image' ), sendUploadToGCS, uploadingImage); // *
-Route.patch('/location/:os/:type/:id', authentication, updateLocation); // *
-Route.patch('/revisi/:os/:type/:id', authentication, revisiLocation); // *
-Route.patch('/:id', authentication, updateEndAtt); // *
-Route.delete('/fail/:id', authentication, deleteCauseFail); // *
-// Route.post('/issues/:id', authentication, updateTruthLocation);
+Route.get('/', getAttUser); // *
+Route.get('/history', getOneUserAttendance); // *
+Route.get('/daily', getDailyHistory); // *
+Route.get('/:id', authorization, findAttById); //*
+Route.get('/search/by', searchFilter); //*
+Route.get('/check/:id', checkAvaiable);
+Route.post('/', createStartAtt); // *
+Route.post('/offline', createAttOffline); 
+Route.patch('/location/:os/:type/:id', updateLocation); // *
+Route.patch('/revisi/:os/:type/:id', revisiLocation); // *
+Route.patch('/:id', updateEndAtt); // *
+Route.delete('/fail/:id', deleteCauseFail); // *
 
+// Route.post('/upload', multer.single( 'image' ), sendUploadToGCS, uploadingImage); // *
 
 module.exports = Route;

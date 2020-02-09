@@ -1,15 +1,16 @@
 const Route = require('express').Router(),
-  { UserController } = require('../controllers'),
-  { signin, signup, checkSignin, changePassword, updateImage, forgotPassword, confirmSecretCode, approval } = UserController,
-  { auth } = require('../middlewares'),
-  { authentication, checkSecretCode, isMaster } = auth
+  { UserController: { signin, signup, checkSignin, changePassword, updateImage, forgotPassword, confirmSecretCode, approval } } = require('../controllers'),
+  { auth: { authentication, checkSecretCode, isMaster } } = require('../middlewares')
 
-Route.get('/', authentication, checkSignin);
-Route.get('/approval', authentication, approval);
-Route.post('/signup', authentication, isMaster, signup);
 Route.post('/signin', signin);
 Route.post('/forgot', forgotPassword);
 Route.post('/forgot/confirm', checkSecretCode, confirmSecretCode);
-Route.post('/change', authentication, changePassword);
-Route.post('/upload', authentication, updateImage);
+
+Route.use( authentication );
+Route.get('/', checkSignin);
+Route.get('/approval', approval);
+Route.post('/signup', isMaster, signup);
+Route.post('/change', changePassword);
+Route.post('/upload', updateImage);
+
 module.exports = Route;

@@ -74,7 +74,7 @@ module.exports = {
     } catch(err) { next(err) }
   },
   updateImage: async ( req, res, next ) => {
-    try { res.status(201).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { profile_image: req.body.image } ) }) }
+    try { res.status(201).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { profile_image: req.body.image }, { new: true } ) }) }
     catch(err) { next( err ) }
   }
 }

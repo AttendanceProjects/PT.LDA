@@ -1,6 +1,5 @@
 const { Attendance: Att, Correct } = require('../models'),
-  { image, date } = require('../helpers'),
-  { deleteFileFromGCS } = image
+  { image: { deleteFileFromGCS }, date } = require('../helpers')
 
 module.exports = {
   getAllAttendance: async ( req, res, next ) => { // for Admin or HRD get all employee attendance
@@ -61,11 +60,6 @@ module.exports = {
         res.status(200).json({ attendance })
       }
     } catch(err) { next(err ) }
-  },
-  uploadingImage: async ( req, res, next ) => { // for uploading image to gcs
-    const url = req.file.cloudStoragePublicUrl;
-    if( url ) res.status(201).json({ url });
-    else next({ status: 400, msg: 'url not found!' })
   },
   updateLocation: async ( req, res, next ) => { // for update location longitude & latitude
     const { location, accuracy, reason } = req.body,

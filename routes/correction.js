@@ -1,20 +1,12 @@
-const { CorrectionController } = require('../controllers'),
-  { auth } = require('../middlewares'),
-  {
-    createCorrection,
-    getUserCorrection,
-    findFilter,
-    responseCorrection,
-    seeAllRequestIn
-  } = CorrectionController,
-  { authentication, acceptCorrection } = auth,
+const { CorrectionController: { createCorrection, getUserCorrection, findFilter, responseCorrection, seeAllRequestIn } } = require('../controllers'),
+  { auth: { acceptCorrection } } = require('../middlewares')
   Route = require('express').Router();
 
-Route.get('/', authentication, getUserCorrection);
-Route.get('/search', authentication, findFilter);
-Route.get('/inreq', authentication, acceptCorrection, seeAllRequestIn);
-Route.post('/', authentication, createCorrection);
-Route.patch('/:id/:res', authentication, acceptCorrection, responseCorrection);
+Route.get('/', getUserCorrection);
+Route.get('/search', findFilter);
+Route.get('/inreq', acceptCorrection, seeAllRequestIn);
+Route.post('/', createCorrection);
+Route.patch('/:id/:res', acceptCorrection, responseCorrection);
 
 
 module.exports = Route;
