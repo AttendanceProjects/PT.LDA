@@ -49,7 +49,7 @@ module.exports = {
     }catch(err){ next(err) }
   },
   updateEndAtt: async ( req, res, next ) => { // delete from dashboard and checkout
-    const { end_image } = req.body;
+    const { end_image, end } = req.body;
     try {
       const attendance = await Att.findById( req.params.id );
       if( attendance.end ) {
@@ -57,7 +57,7 @@ module.exports = {
         next({ status: 400, msg: 'You already Check Out'});
       }
       else {
-        const attendance = await Att.findByIdAndUpdate( req.params.id, { end: date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
+        const attendance = await Att.findByIdAndUpdate( req.params.id, { end: end ? new Date( end ).toLocaleTimeString() : date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
         res.status(200).json({ attendance })
       }
     } catch(err) { next(err ) }

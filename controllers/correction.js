@@ -1,5 +1,5 @@
-const { Correct, Attendance: Att } = require('../models')
-
+const { Correct, Attendance: Att } = require('../models'),
+  { image: { deleteFileFromGCS }} = require('../helpers')
 
 module.exports = {
   createCorrection: async (req, res, next) => {
@@ -24,7 +24,7 @@ id => ${ id }
         if( correct ) res.status(201).json({ msg: 'Your request has been sent' })
         else next({ status: 400, msg: 'something error, please try again' })
       }
-    }catch(err) { next( err ) }
+    }catch(err) { await deleteFileFromGCS( image ); next( err ); }
   },
   getUserCorrection: async (req, res, next) => {
     try {
