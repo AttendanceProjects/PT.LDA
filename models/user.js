@@ -27,7 +27,7 @@ UserSchema.pre('save', function(next) {
   let IndoTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jakarta"});
   this.join = new Date( IndoTime );
   this.password = require('../helpers').hash.hashPassword( this.password );
-  this.profile_image = 'https://storage.cloud.google.com/defaultimage/59162520-blanco-perfil-de-usuario-icono-en-el-boto%CC%81n-negro-aislado-en-blanco.jpg?authuser=0';
+  this.profile_image = 'https://storage.cloud.google.com/ptlda/Default/animation.jpeg?authuser=1';
   if( this.role ) this.role = this.role;
   else this.role = 'worker';
   next()
