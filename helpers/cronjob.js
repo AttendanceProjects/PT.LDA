@@ -2,7 +2,7 @@ const { User, Attendance } = require('../models'),
   cron = require('node-cron');
 
 
-cron.schedule("0 0 23 */1 * *", async () => {
+cron.schedule("0 0 23 */1 * ", async () => {
   // cron.schedule('1 * * * * *', async () => {
   console.log( 'CronJob is Running' );
   try {
