@@ -43,9 +43,9 @@ module.exports = {
   },
   isEmployee: async ( req, res, next ) => {
     try {
-      const company = await Company.find()[0];
+      const company = await Company.find();
       let pass = false;
-      company.Employee.forEach((el, i) => {
+      company[0].Employee.forEach((el, i) => {
         if ( el == req.loggedUser.id ) pass = true;
       })
       if( !pass ) next({ status: 400, msg: `Sorry youre not ${ company.name } family` });
