@@ -67,12 +67,6 @@ module.exports = {
       }else next({ status: 400, msg: 'Sorry, wrong secret code' });
     }catch(err) { next(err) }
   },
-  approval: async ( req, res, next ) => {
-    try {
-      const user = await User.find();
-      res.status(200).json({ user: await user.filter(el => el.role === 'master' || el.role === 'ceo' || el.role === 'director' || el.role === 'hrd' ) })
-    } catch(err) { next(err) }
-  },
   updateImage: async ( req, res, next ) => {
     try { 
       const user = await User.findById( req.loggedUser.id );
@@ -89,6 +83,13 @@ module.exports = {
     try {
       const user = await User.find();
       res.status(200).json({ user: user.filter(el => el._id !== req.loggedUser.id ) });
+    }catch(err) { next( err ) }
+  },
+  filterFindUser: async ( req, res, next ) => {
+    try {
+      const { search } = req.body;
+      const user = await User.find({ $or: [{ username: new RegExp( search )}, { role: new RegExp( search ) }]});
+      res.status(200).json({ user })
     }catch(err) { next( err ) }
   }
 }
