@@ -70,7 +70,7 @@ module.exports = {
   approval: async ( req, res, next ) => {
     try {
       const user = await User.find();
-      res.status(200).json({ user: await user.filter(el => el.role !== 'worker') })
+      res.status(200).json({ user: await user.filter(el => el.role === 'master' || el.role === 'ceo' || el.role === 'director' || el.role === 'hrd' ) })
     } catch(err) { next(err) }
   },
   updateImage: async ( req, res, next ) => {
@@ -84,5 +84,11 @@ module.exports = {
       }
     }
     catch(err) { next( err ) }
+  },
+  allEmployee: async ( req, res, next ) => {
+    try {
+      const user = await User.find();
+      res.status(200).json({ user: user.filter(el => el._id !== req.loggedUser.id ) });
+    }catch(err) { next( err ) }
   }
 }

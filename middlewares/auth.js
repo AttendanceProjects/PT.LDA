@@ -1,6 +1,6 @@
 const { jwt } = require('../helpers'),
   { decodeToken } = jwt,
-  { User, Attendance } = require('../models'),
+  { User, Attendance, Company } = require('../models'),
   mongoose = require('mongoose');
 
 module.exports = {
@@ -37,8 +37,19 @@ module.exports = {
   acceptCorrection: async ( req, res, next ) => {
     try {
       const user = await User.findById( req.loggedUser.id )
-      if( user.role === 'master' || user.role === 'spv' ) next();
+      if( user.role === 'master' || user.role === 'spv' || user.role === 'director' || user.role === 'ceo' ) next();
       else next({ status: 400, msg: 'don\'t have access' })
+    }catch(err) { next( err ) }
+  },
+  isEmployee: async ( req, res, next ) => {
+    try {
+      const company = await Company.find()[0];
+      let pass = false;
+      company.Employee.forEach((el, i) => {
+        if ( el == req.loggedUser.id ) pass = true;
+      })
+      if( !pass ) next({ status: 400, msg: `Sorry youre not ${ company.name } family` });
+      else next()
     }catch(err) { next( err ) }
   }
 }
