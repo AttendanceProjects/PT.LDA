@@ -10,7 +10,12 @@ const { model, Schema } = require('mongoose'),
     gender: { type: String, required: [true, 'gender is required'] },
     phone: { type: String, required: [true, 'phone number is required'] },
     religion: String,
-    identityNumber: Number
+    identityNumber: Number,
+    pin_security: {
+      type: Number,
+      min: 100000,
+      max: 999999
+    }
   }, { versionKey: false, timestamps: true })
 
 UserSchema.path('username').validate(function( val ){

@@ -91,5 +91,11 @@ module.exports = {
       const user = await User.find({ $or: [{ username: new RegExp( search )}, { role: new RegExp( search ) }]});
       res.status(200).json({ user })
     }catch(err) { next( err ) }
+  },
+  updatePin: async (req, res, next) => {
+    try {
+      const { new_pin: pin_security } = req.body;
+      res.status(200).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { pin_security }, { new: true } ) })
+    }catch(err) { next( err ) }
   }
 }

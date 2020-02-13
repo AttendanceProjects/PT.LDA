@@ -34,11 +34,25 @@ module.exports = {
       else next({ status: 400, msg: 'don\'t have access' })
     }catch(err) { next(err ) }
   },
-  acceptCorrection: async ( req, res, next ) => {
+  isStaff: async ( req, res, next ) => {
+    try{
+      const user = await User.findById( req.loggedUser.id );
+      const { new_pin, old_pin } = req.body;
+      if( new_pin && old_pin ) {
+        if( user.pin_security === old_pin ) next();
+        else next({ status: 400, msg: 'Invalid Old Pin Security' })
+      }else{
+        if( user.role === 'master' || user.role === 'HR Staff' || user.role === 'director' ) next();
+        else next({ status: 400, msg: 'Dont have access' })
+      }
+    }catch(err) { next( err ) }
+  },
+  matchPin: async ( req, res, next ) => {
     try {
-      const user = await User.findById( req.loggedUser.id )
-      if( user.role === 'master' || user.role === 'spv' || user.role === 'director' || user.role === 'ceo' ) next();
-      else next({ status: 400, msg: 'don\'t have access' })
+      const user = await User.findById( req.loggedUser.id );
+      const { pin_security } = req.body;
+      if( user.pin_security === pin_security ) next();
+      else next({ status: 400, msg: 'invalid pin security' });
     }catch(err) { next( err ) }
   },
   isEmployee: async ( req, res, next ) => {

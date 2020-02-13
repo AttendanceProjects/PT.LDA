@@ -1,20 +1,11 @@
-const { Correct, Attendance: Att } = require('../models'),
-  { image: { deleteFileFromGCS }} = require('../helpers')
+const { Correct, Attendance: Att, User } = require('../models'),
+  { image: { deleteFileFromGCS }, hash: { comparePassword } } = require('../helpers')
 
 module.exports = {
   createCorrection: async (req, res, next) => {
     let { reason, image, start_time, end_time, id} = req.body;
     start_time = new Date( start_time ).toLocaleTimeString();
     end_time = new Date( end_time ).toLocaleTimeString();
-    setTimeout(() => console.log(`
-PAYLOADS ===================
-reason => ${ reason }
-image => ${ image }
-start time => ${ start_time }
-end time => ${ end_time }
-id => ${ id }
-****************************
-    `, 3000))
     try {
       const correct = await Correct.findOne({ AttId: id })
       if( correct ) next({ status: 400, msg: 'This attendance on request correction' })
@@ -48,7 +39,12 @@ id => ${ id }
     }else next({ status: 400, msg: 'Invalid search keyword' })
   },
   seeAllRequestIn: async (req, res, next) => {
-    try { res.status(200).json({ correction: await Correct.find({ status: status === 'req' }) }) }
+    try { res.status(200).json({ correction: await Correct.find({ status: status === 'req' }).populate( 'UserId' ) }) }
     catch(err) { next( err ) }
+  },
+  getOneCorrection: async ( req, res, next ) => {
+    try {
+      res.status(200).json({ correction: await Correct.findById( req.params.id ).populate('UserId').populate('AttId') })
+    }catch(err) { next( err ) }
   }
 }
