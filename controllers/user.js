@@ -97,5 +97,14 @@ module.exports = {
       const { new_pin: pin_security } = req.body;
       res.status(200).json({ user: await User.findByIdAndUpdate( req.loggedUser.id, { pin_security }, { new: true } ) })
     }catch(err) { next( err ) }
+  },
+  checkPin: async ( req, res, next ) => {
+    try {
+      const { pin_security } = req.body;
+      const user = await User.findById( req.loggedUser.id );
+      if( user.pin_security === pin_security ) {
+        res.status(200).json({ status: 'ok', message: 'allright' })
+      }else res.status(200).json({ status: 'nope', message: 'Invalid Pin Security' })
+    }catch(err) { next( err ) }
   }
 }

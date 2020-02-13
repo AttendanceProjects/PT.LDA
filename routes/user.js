@@ -1,6 +1,6 @@
 const Route = require('express').Router(),
-  { UserController: { signin, signup, checkSignin, changePassword, updatePin, updateImage, forgotPassword, confirmSecretCode, filterFindUser, allEmployee } } = require('../controllers'),
-  { auth: { authentication, checkSecretCode, isMaster, isEmployee, isStaff } } = require('../middlewares')
+  { UserController: { signin, checkPin, signup, checkSignin, changePassword, updatePin, updateImage, forgotPassword, confirmSecretCode, filterFindUser, allEmployee } } = require('../controllers'),
+  { auth: { authentication, checkSecretCode, isStaff, isMaster, isEmployee, isStaff } } = require('../middlewares')
 
 Route.post('/signin', signin); // *
 Route.post('/forgot', forgotPassword); //*
@@ -14,5 +14,6 @@ Route.post('/signup', isMaster, signup); // *
 Route.post('/change', changePassword); //*
 Route.post('/upload', updateImage); //*
 Route.put('/change/pin', isStaff, updatePin); //*
+Route.get('/check', isStaff, checkPin)
 
 module.exports = Route;
