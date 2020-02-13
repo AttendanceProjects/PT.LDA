@@ -1,6 +1,6 @@
 const Route = require('express').Router(),
   { UserController: { signin, checkPin, signup, checkSignin, changePassword, updatePin, updateImage, forgotPassword, confirmSecretCode, filterFindUser, allEmployee } } = require('../controllers'),
-  { auth: { authentication, checkSecretCode, isStaff, isMaster, isEmployee, isStaff } } = require('../middlewares')
+  { auth: { authentication, checkSecretCode, isStaff, isMaster, isEmployee } } = require('../middlewares')
 
 Route.post('/signin', signin); // *
 Route.post('/forgot', forgotPassword); //*
