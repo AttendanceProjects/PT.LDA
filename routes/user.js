@@ -14,6 +14,6 @@ Route.post('/signup', isMaster, signup); // *
 Route.post('/change', changePassword); //*
 Route.post('/upload', updateImage); //*
 Route.put('/change/pin', isStaff, updatePin); //*
-Route.get('/check', isStaff, checkPin)
+Route.post('/check', isStaff, checkPin)
 
 module.exports = Route;
