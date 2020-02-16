@@ -39,7 +39,7 @@ module.exports = {
     }else next({ status: 400, msg: 'Invalid search keyword' })
   },
   seeAllRequestIn: async (req, res, next) => {
-    try { res.status(200).json({ correction: await Correct.find({ status: status === 'req' }).populate( 'UserId' ) }) }
+    try { res.status(200).json({ correction: await Correct.find({ status: 'req' }).populate( 'UserId' ) }) }
     catch(err) { next( err ) }
   },
   getOneCorrection: async ( req, res, next ) => {
