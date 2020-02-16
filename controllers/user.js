@@ -102,8 +102,8 @@ module.exports = {
     try {
       const { pin_security } = req.body;
       const user = await User.findById( req.loggedUser.id );
-      if( user.pin_security === pin_security ) {
-        res.status(200).json({ status: 'ok', message: 'allright' })
+      if( user.pin_security === Number( pin_security ) ) {
+        res.status(200).json({ status: 'ok', message: 'Welcome' })
       }else res.status(200).json({ status: 'nope', message: 'Invalid Pin Security' })
     }catch(err) { next( err ) }
   }

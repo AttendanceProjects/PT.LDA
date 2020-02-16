@@ -175,15 +175,3 @@ module.exports = {
     }catch(err){ next( err ) }
   }
 }
-
-
-/*
-if( clock > 7 && time === 'AM' && clock < 10 && time === 'AM' ) {
-  console.log( 'waktu absen datang' );
-} else if( clock > 10 && clock < 5 && time === 'PM' ) {
-  console.log( 'waktu kerja dianggap alfa' );
-} else if( clock > 5 && time === 'PM' && clock < 7 && time === 'PM' ) {
-  console.log( 'waktu absen pulang' );
-} else console.log( 'diluar waktu kerja' );
-
-*/
