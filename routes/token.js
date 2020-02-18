@@ -1,9 +1,9 @@
 const Route = require('express').Router(),
-  { TokenController: { createToken, getAllTokenForAdmin, getOneTokenForPush } } = require('../controllers'),
+  { TokenController: { createToken, pushAllUserForAdmin, pushOneUserForAdmin } } = require('../controllers'),
   { auth: { isStaff } } = require('../middlewares')
 
 Route.post('/', createToken); //all user
-Route.get('/', isStaff, getAllTokenForAdmin); //admin only
-Route.get('/:id', isStaff, getOneTokenForPush); //admin only
+Route.post('/all', isStaff, pushAllUserForAdmin); //admin only
+Route.post('/user/:id', isStaff, pushOneUserForAdmin); //admin only
 
 module.exports = Route;
