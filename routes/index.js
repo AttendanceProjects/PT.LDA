@@ -9,5 +9,6 @@ Route.use('/company', require('./company'));
 Route.use('/correction', require('./correction'));
 Route.use('/upload', require('./upload'));
 Route.use('/time', require('./time'));
+Route.use('/token', require('./token'));
 
 module.exports = Route;
