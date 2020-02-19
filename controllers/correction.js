@@ -20,7 +20,6 @@ module.exports = {
   getUserCorrection: async (req, res, next) => {
     try {
       const correction = await Correct.find({ UserId: req.loggedUser.id }).populate('AttId').sort([[ 'createdAt', 'descending' ]]);
-      console.log( correction[0] )
       res.status(200).json({ correction })
     }catch(err) { next( err ) }
   },
@@ -34,8 +33,8 @@ module.exports = {
   },
   responseCorrection: async (req, res, next) => {
     const { res: response, id } = req.params;
-    if( res === 'acc' || res === 'dec' ) {
-      res.status(200).json({ correction: await Correct.findByIdAndUpdate(id, { status: response }, { new: true }).populate('AttId'), msg: res })
+    if( response === 'acc' || response === 'dec' ) {
+      res.status(200).json({ correction: await Correct.findByIdAndUpdate( id, { status: response }, { new: true }).populate('AttId'), msg: res })
     }else next({ status: 400, msg: 'Invalid search keyword' })
   },
   seeAllRequestIn: async (req, res, next) => {
