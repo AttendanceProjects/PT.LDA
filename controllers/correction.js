@@ -34,7 +34,9 @@ module.exports = {
   responseCorrection: async (req, res, next) => {
     const { res: response, id } = req.params;
     if( response === 'acc' || response === 'dec' ) {
-      res.status(200).json({ correction: await Correct.findByIdAndUpdate( id, { status: response }, { new: true }).populate('AttId'), msg: res })
+      try{
+        res.status(200).json({ correction: await Correct.findByIdAndUpdate( id, { status: response }, { new: true }).populate('AttId'), msg: res })
+      }catch(err) { next( err ) }
     }else next({ status: 400, msg: 'Invalid search keyword' })
   },
   seeAllRequestIn: async (req, res, next) => {
