@@ -27,7 +27,7 @@ module.exports = {
     const { key } = req.query;
     if( key === 'req' || key === 'acc' || key === 'dec' ) {
       try {
-        res.status(200).json({ correction: await Correct.find({ status: key }).populate('AttId').populate('UserId').sort([[ 'createdAt', 'descending' ]]) });
+        res.status(200).json({ correction: await Correct.find({ UserId: req.loggedUser.id, status: key }).populate('AttId').populate('UserId').sort([[ 'createdAt', 'descending' ]]) });
       } catch(err) { next( err ) }
     }else next({ status: 400, msg: 'Invalid search keyword' })
   },
