@@ -18,9 +18,9 @@ module.exports = {
   },
   updateEndAttOffline: async (req, res, next) => {
     try {
-      const { end_image, end_reason, clock } = req.body;
+      const { end_image, clock } = req.body;
       const { id } = req.params;
-      res.status(200).json({ attendance: await Att.findByIdAndUpdate( id, { end_image, end_reason, end: new Date( clock ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }) }) })
+      res.status(200).json({ attendance: await Att.findByIdAndUpdate( id, { end_image, end: new Date( clock ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }) }) })
     }catch(err) { next( err ) }
   },
   createStartAtt: async ( req, res, next ) => { // create attendance
