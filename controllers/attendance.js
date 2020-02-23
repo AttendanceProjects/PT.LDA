@@ -13,7 +13,7 @@ module.exports = {
   createAttOffline: async (req, res, next) => {
     try{
       const { start_image, start_reason, clock } = req.body;
-      res.status(201).json({ attendance: await Att.create({ UserId: req.loggedUser.id, start_reason, start_image, time: new Date( clock ).toLocaleTimeString(), date: new Date( clock ).toDateString() }) })
+      res.status(201).json({ attendance: await Att.create({ UserId: req.loggedUser.id, start_reason, start_image, time: new Date( clock ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }), date: new Date( clock ).toDateString() }) })
     }catch(err) { next( err ) }
   },
   createStartAtt: async ( req, res, next ) => { // create attendance
@@ -56,7 +56,7 @@ module.exports = {
         next({ status: 400, msg: 'You already Check Out'});
       }
       else {
-        const attendance = await Att.findByIdAndUpdate( req.params.id, { end: end !== 'false' ? new Date( end ).toLocaleTimeString() : date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
+        const attendance = await Att.findByIdAndUpdate( req.params.id, { end: end !== 'false' ? new Date( end ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }) : date().toLocaleTimeString(), end_image }, { new: true } ).populate('UserId')
         res.status(200).json({ attendance })
       }
     } catch(err) { next(err ) }
