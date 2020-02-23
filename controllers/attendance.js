@@ -13,7 +13,14 @@ module.exports = {
   createAttOffline: async (req, res, next) => {
     try{
       const { start_image, start_reason, clock } = req.body;
-      res.status(201).json({ attendance: await Att.create({ UserId: req.loggedUser.id, start_reason, start_image, time: new Date( clock ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }), date: new Date( clock ).toDateString() }) })
+      res.status(201).json({ attendance: await Att.create({ UserId: req.loggedUser.id, start_reason, start_image, start: new Date( clock ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }), date: new Date( clock ).toDateString() }) })
+    }catch(err) { next( err ) }
+  },
+  updateEndAttOffline: async (req, res, next) => {
+    try {
+      const { end_image, end_reason, clock } = req.body;
+      const { id } = req.params;
+      res.status(200).json({ attendance: await Att.findByIdAndUpdate( id, { end_image, end_reason, end: new Date( clock ).toLocaleTimeString('en-US', { timeZone: 'Asia/Jakarta' }) }) })
     }catch(err) { next( err ) }
   },
   createStartAtt: async ( req, res, next ) => { // create attendance

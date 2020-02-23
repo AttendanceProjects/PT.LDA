@@ -13,7 +13,8 @@ const Route = require('express').Router(),
       getOneUserAttendance,
       findAttById,
       searchFilter,
-      deleteCauseFail
+      deleteCauseFail,
+      updateEndAttOffline
     } } = require('../controllers')
 
 // Route.get('/admin', isAdmin, getAllAttendance); // soon
@@ -25,7 +26,8 @@ Route.get('/:id', authorization, findAttById); //*
 Route.get('/search/by', searchFilter); //*
 Route.get('/check/:id', checkAvaiable);
 Route.post('/', createStartAtt); // *
-Route.post('/offline', createAttOffline); 
+Route.post('/offline', createAttOffline); //*
+Route.patch('/offline/:id', updateEndAttOffline)
 Route.patch('/location/:os/:type/:id', updateLocation); // *
 Route.patch('/revisi/:os/:type/:id', revisiLocation); // *
 Route.patch('/:id', updateEndAtt); // *
