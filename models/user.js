@@ -33,7 +33,12 @@ UserSchema.pre('save', function(next) {
   this.join = new Date( IndoTime );
   this.password = require('../helpers').hash.hashPassword( this.password );
   this.profile_image = 'https://storage.cloud.google.com/ptlda/Default/animation.jpeg?authuser=1';
-  if( this.role ) this.role = this.role;
+  if( this.role ) {
+    this.role = this.role;
+    if( this.role === 'master' || this.role === 'HR Staff' || this.role === 'director' ) {
+      this.pin_security = 123456;
+    }else delete this.pin_security;
+  }
   else this.role = 'worker';
   next()
 })
