@@ -7,9 +7,9 @@ module.exports = {
     catch(err) { next(err) }
   },
   signup: async ( req, res, next ) => {
-    const { username, password, email, role, phone, identityNumber, religion, gender } = req.body;
+    const { username, password, email, role, phone, religion, gender } = req.body;
     try {
-      const user = await User.create({ username, password, email, role, phone, identityNumber, religion, gender });
+      const user = await User.create({ username, password, email, role, phone, religion, gender });
       const company = await Company.find();
       await Company.findByIdAndUpdate(company[0]._id, {$push: {Employee: user._id}});
       res.status(201).json({ user })
@@ -20,14 +20,11 @@ module.exports = {
     const { request, password } = req.body;
     try {
       const user = await User.findOne({ $or: [ {username: request}, {email: request} ] })
-      console.log( user );
       const company = await Company.find();
-      console.log( company );
       let pass = false;
       company[0].Employee.forEach((el, i) => {
         if( String( el ) == String( user._id ) ) pass = true;
       })
-      console.log( pass );
       if( pass ) {
         if( user && hash.comparePassword( password, user.password ) ) res.status(201).json({ user, token: jwt.signToken({ id: user._id, username: user.username, email: user.email, role: user.role }) })
         else next({ status: 400, msg: 'request/password wrong'})
