@@ -3,11 +3,11 @@ const Route = require('express').Router(),
 
 Route.use('/users', require('./user'));
 
+Route.use('/upload', require('./upload'));
 Route.use( authentication );
 Route.use('/attendance', require('./attendance'));
 Route.use('/company', require('./company'));
 Route.use('/correction', require('./correction'));
-Route.use('/upload', require('./upload'));
 Route.use('/time', require('./time'));
 Route.use('/token', require('./token'));
 
